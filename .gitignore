@@ -1,0 +1,54 @@
+# Maven target
+target/
+backend/target/
+**/target/
+
+# Node modules and build output
+node_modules/
+frontend/node_modules/
+**/node_modules/
+build/
+frontend/build/
+**/build/
+dist/
+**/dist/
+
+# Local uploads (for temporary request images)
+uploads/
+backend/uploads/
+**/uploads/
+
+# STS / Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# Local environment variables / Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+frontend/.env
+**/.env*
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Log files
+*.log
