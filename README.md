@@ -1,208 +1,136 @@
-# CareConnect - NGO & Volunteer Platform
+# CareConnect — NGO & Volunteer Platform
 
-A full-stack web application that connects NGOs with volunteers to facilitate donations, requests, and community events.
+A modern, full-stack web application designed to connect Non-Governmental Organizations (NGOs) with community volunteers to coordinate donation requests, physical/monetary contributions, and volunteer events.
 
-## 🏗️ Architecture
+---
 
-- **Frontend**: React.js with Bootstrap
-- **Backend**: PHP (XAMPP)
-- **Database**: MySQL
-- **API**: RESTful APIs with JSON responses
+## 🏗️ Architecture & Tech Stack
+
+This project was successfully migrated from a legacy PHP + MySQL monolith to a modern decoupled full-stack architecture:
+
+### 1. Frontend
+* **Core:** React.js, React Context (Authentication & Session State)
+* **Styling:** TailwindCSS, Vanilla CSS, Lucide Icons
+* **HTTP Client:** Axios (configured with interceptors to automatically attach Bearer JWT tokens)
+
+### 2. Backend (Java / Spring Boot)
+* **Core:** Java 17+, Spring Boot 3.x, Maven
+* **Data Layer:** Spring Data JPA, Hibernate, PostgreSQL
+* **Security:** Spring Security (Stateless JWT authentication and role-based access control)
+* **Features:**
+  * **Local File Uploads:** Dedicated image upload endpoint storing files locally on the server filesystem.
+  * **Robust JSON Handling:** Case-insensitive enum deserialization for flexible API inputs.
+  * **Unified Response Format:** All endpoints wrap payloads inside a standard `ApiResponse<T>` envelope for seamless frontend state mapping.
+
+### 3. Database
+* **Engine:** PostgreSQL 15+
+
+---
 
 ## 📋 Features
 
 ### For NGOs:
-- Create and manage donation requests
-- View donations received
-- Track request status and urgency levels
-- Dashboard with statistics
+* **Create Requests:** Post request campaigns selecting **multiple categories** (e.g. Food, Clothes, Money, Beds) and uploading a **local request image** directly.
+* **Events Hosted:** Create, host, and manage volunteer-driven community events.
+* **Donations Received:** Track and verify incoming donations from volunteers.
 
 ### For Volunteers:
-- Browse available requests
-- Make donations (money/items)
-- View donation history
-- Participate in community events
+* **Browse & Filter:** Search and filter active donation requests by location, urgency, and category.
+* **Make Donations:** Donate physical items or make monetary payments (integrated with secure payment flows).
+* **Create & Join Events:** Volunteers can browse and join NGO events or even host their own community events.
 
-### For Everyone:
-- View upcoming events
-- Create and manage events
-- User authentication and role-based access
-
-## 🚀 Setup Instructions
-
-### Prerequisites
-- XAMPP (Apache + MySQL)
-- Node.js and npm
-- Git
-
-### 1. Database Setup
-
-1. Start XAMPP and ensure Apache and MySQL are running
-2. Open phpMyAdmin (http://localhost/phpmyadmin)
-3. Import the database schema:
-   ```sql
-   -- Run the SQL commands from database_setup.sql
-   CREATE DATABASE careconnect;
-   USE careconnect;
-   -- ... (rest of the schema)
-   ```
-
-### 2. Backend Setup (PHP)
-
-1. Copy the `htdocs/careconnect-backend/` folder to your XAMPP htdocs directory
-2. The API endpoints will be available at:
-   - `http://localhost/careconnect-backend/api/users.php`
-   - `http://localhost/careconnect-backend/api/requests.php`
-   - `http://localhost/careconnect-backend/api/donations.php`
-   - `http://localhost/careconnect-backend/api/events.php`
-   - `http://localhost/careconnect-backend/api/login.php`
-
-### 3. Frontend Setup (React)
-
-1. Navigate to the project root directory
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-4. The app will be available at `http://localhost:3000`
+---
 
 ## 📁 Project Structure
 
 ```
 CareConnect/
-├── htdocs/careconnect-backend/api/
-│   ├── db.php              # Database connection
-│   ├── users.php           # User management API
-│   ├── requests.php        # Request management API
-│   ├── donations.php       # Donation management API
-│   ├── events.php          # Event management API
-│   └── login.php           # Authentication API
-├── src/
-│   ├── components/
-│   │   ├── Navbar.js       # Navigation component
-│   │   ├── HomePage.js     # Landing page
-│   │   ├── SignupForm.js   # User registration
-│   │   ├── LoginForm.js    # User login
-│   │   ├── NGODashboard.js # NGO dashboard
-│   │   ├── VolunteerDashboard.js # Volunteer dashboard
-│   │   └── EventsPage.js   # Events management
-│   ├── App.js              # Main app component
-│   ├── index.js            # App entry point
-│   └── index.css           # Global styles
-├── public/
-│   └── index.html          # HTML template
-├── package.json            # Dependencies
-└── database_setup.sql      # Database schema
+├── backend/                  # Java Spring Boot REST API
+│   ├── src/main/java/        # Backend Source Code
+│   │   └── com/careconnect/
+│   │       ├── config/       # Security & Static Resource Mappings
+│   │       ├── controller/   # REST Controllers (Auth, Request, Event, Donation, Upload)
+│   │       ├── dto/          # Data Transfer Objects & ApiResponse Envelope
+│   │       ├── entity/       # JPA Entities (User, DonationRequest, Donation, Event)
+│   │       ├── enums/        # Roles, urgencies, and statuses
+│   │       ├── exception/    # Custom exceptions & Global Handlers
+│   │       ├── repository/   # JpaRepositories
+│   │       └── service/      # Transactional Business Services
+│   ├── src/main/resources/   # Application properties
+│   └── pom.xml               # Maven Dependency Configuration
+│
+├── frontend/                 # React SPA Client
+│   ├── src/
+│   │   ├── components/       # Forms, Cards, and layout elements
+│   │   ├── contexts/         # Authentication context (JWT management)
+│   │   ├── pages/            # View Pages (Dashboards, Event Details, Auth)
+│   │   └── utils/            # Axios API config
+│   ├── package.json          # Node dependencies
+│   └── .env                  # API Base URL config
+│
+└── database/
+    └── schema.sql            # PostgreSQL database creation schema
 ```
 
-## 🔧 API Endpoints
+---
 
-### Users API (`users.php`)
-- `POST` - Create new user
-- `GET` - Fetch all users
+## 🚀 Local Setup Instructions
 
-### Requests API (`requests.php`)
-- `POST` - Create new request
-- `GET` - Fetch all requests
+### Prerequisites
+* Java 17 or higher (fully tested on Java 25)
+* Node.js and npm
+* PostgreSQL installed and running locally
 
-### Donations API (`donations.php`)
-- `POST` - Create new donation
-- `GET` - Fetch all donations
-
-### Events API (`events.php`)
-- `POST` - Create new event
-- `GET` - Fetch all events
-
-### Login API (`login.php`)
-- `POST` - User authentication
-
-## 📝 Sample API Usage
-
-### Create User
-```javascript
-const userData = {
-  name: "John Doe",
-  email: "john@example.com",
-  password: "123456",
-  role: "Volunteer",
-  location: "New York"
-};
-
-axios.post('http://localhost/careconnect-backend/api/users.php', userData)
-  .then(response => console.log(response.data));
+### 1. Database Setup
+Create a local database named `careconnect` using psql or pgAdmin:
+```sql
+CREATE DATABASE careconnect;
 ```
 
-### Create Request
-```javascript
-const requestData = {
-  orgId: 1,
-  category: "Food",
-  title: "Need rice bags",
-  description: "Requesting 20kg rice bags for orphanage",
-  quantity: 5,
-  urgencyLevel: "High"
-};
-
-axios.post('http://localhost/careconnect-backend/api/requests.php', requestData)
-  .then(response => console.log(response.data));
-```
-
-## 🎨 UI Features
-
-- Responsive design with Bootstrap
-- Role-based navigation
-- Real-time data updates
-- Form validation
-- Loading states
-- Success/error messages
-- Modern card-based layout
-
-## 🔐 Security Features
-
-- Password hashing (PHP password_hash)
-- CORS headers for API security
-- Input validation
-- SQL injection prevention (PDO prepared statements)
-- Role-based access control
-
-## 🚀 Deployment
-
-### Backend (XAMPP)
-1. Ensure XAMPP is running
-2. Place backend files in htdocs directory
-3. Configure database connection in `db.php`
-
-### Frontend (React)
-1. Build the production version:
-   ```bash
-   npm run build
+### 2. Backend Setup
+1. Navigate to the `backend/` folder.
+2. Open `src/main/resources/application.properties` and edit the database configuration with your local PostgreSQL credentials:
+   ```properties
+   spring.datasource.url=jdbc:postgresql://localhost:5432/careconnect
+   spring.datasource.username=postgres
+   spring.datasource.password=your_postgres_password
    ```
-2. Deploy the `build` folder to your web server
+3. Run the application:
+   ```bash
+   mvn spring-boot:run
+   ```
+   *The server will start up on `http://localhost:8080` and auto-generate the database tables.*
+
+### 3. Frontend Setup
+1. Navigate to the `frontend/` folder.
+2. Ensure the `.env` file points to the local backend port:
+   ```env
+   REACT_APP_API_URL=http://localhost:8080
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the React development server:
+   ```bash
+   npm start
+   ```
+   *The app will open automatically on `http://localhost:3000`.*
+
+---
+
+## ☁️ Production Deployment (Render)
+
+For a detailed walkthrough on setting up Render PostgreSQL, Spring Boot, and static hosting for React, see the [Render Deployment Guide](deployment_guide.md).
+
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## 🆘 Support
-
-For support and questions:
-- Check the API documentation
-- Review the database schema
-- Test API endpoints with tools like Postman
-- Ensure XAMPP services are running
-
----
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/NewFeature`).
+3. Commit your changes (`git commit -m 'Add NewFeature'`).
+4. Push to the branch (`git push origin feature/NewFeature`).
+5. Open a Pull Request.
 
 **Happy Coding! 🚀**
